@@ -11,11 +11,27 @@
 body.theme-dark{--bg1:#000;--bg2:#0a0a0a;--bg3:#111;--surface:rgba(255,255,255,0.04);--surface2:rgba(255,255,255,0.08);--stroke:rgba(255,255,255,0.1);--violet:#4a3d8f;--violet2:#6c5ce7;--amber:#b8941f;--magenta:#a8556e;--blue:#4a6fa5;--green:#00a854;--red:#c62828;--orange:#c45a2a;--text:#e0e0e0;--muted:rgba(255,255,255,0.45);--lily-opacity:0.05}
 body.theme-cloud{--bg1:#e8eef5;--bg2:#d5dfe8;--bg3:#c5d3e0;--surface:rgba(255,255,255,0.55);--surface2:rgba(255,255,255,0.75);--stroke:rgba(80,100,120,0.2);--violet:#5a6fa8;--violet2:#7a8fc8;--amber:#c49a2a;--magenta:#a8556e;--blue:#3a6fa5;--green:#2a9d5c;--red:#c62828;--orange:#c45a2a;--text:#1a2a3a;--muted:rgba(30,50,70,0.6);--lily-opacity:0.08}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{min-height:100%}
-body{font-family:'Segoe UI',Tahoma,sans-serif;background:linear-gradient(135deg,var(--bg1),var(--bg2) 55%,var(--bg3));background-attachment:fixed;color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.45;-webkit-user-select:none;user-select:none;touch-action:manipulation;transition:background 0.6s}
+html,body{min-height:100%;overflow-x:hidden}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:linear-gradient(135deg,var(--bg1),var(--bg2) 55%,var(--bg3));background-attachment:fixed;color:var(--text);min-height:100vh;line-height:1.45;-webkit-user-select:none;user-select:none;touch-action:manipulation;transition:background 0.6s}
 body.theme-cloud{background:linear-gradient(180deg,#c5d3e0,#d5dfe8 40%,#e8eef5)}
 input,textarea,select{-webkit-user-select:text!important;user-select:text!important}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:rgba(162,155,254,0.45);border-radius:6px}
+
+/* ЗАСТАВКА (SPLASH SCREEN) */
+#splash-screen{position:fixed;inset:0;z-index:99999;background:radial-gradient(circle at center,#2d1b4e 0%,#0a0510 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.8s ease,transform 0.8s ease}
+#splash-screen.hidden{opacity:0;pointer-events:none;transform:scale(1.1)}
+.splash-lilies{position:absolute;inset:0;overflow:hidden}
+.splash-lily{position:absolute;font-size:2rem;opacity:0;animation:splashFly 4s infinite linear}
+@keyframes splashFly{0%{transform:translateY(100vh) scale(0.5) rotate(0deg);opacity:0}10%{opacity:0.8}90%{opacity:0.8}100%{transform:translateY(-20vh) scale(1.5) rotate(360deg);opacity:0}}
+.splash-comet{position:absolute;width:4px;height:4px;background:#fff;border-radius:50%;box-shadow:0 0 10px 2px #fff, -20px 0 15px 2px rgba(255,255,255,0.5);animation:cometFall 2s infinite linear}
+@keyframes cometFall{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(-300px,300px) scale(0);opacity:0}}
+.splash-content{text-align:center;z-index:2;position:relative}
+.splash-logo{font-size:4rem;margin-bottom:20px;animation:pulseLogo 2s infinite ease-in-out}
+@keyframes pulseLogo{0%,100%{transform:scale(1);filter:brightness(1)}50%{transform:scale(1.1);filter:brightness(1.3)}}
+.splash-title{font-size:1.8rem;font-weight:900;background:linear-gradient(to right,#a29bfe,#fdcb6e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+.splash-sub{color:rgba(255,255,255,0.6);font-size:0.9rem}
+
+/* ОСНОВНОЙ КОНТЕНТ */
 .lily-bg{position:fixed;font-size:2.2rem;opacity:var(--lily-opacity);pointer-events:none;z-index:1;animation:floatLily 11s infinite ease-in-out}
 .lily-bg.rainbow{animation:floatLily 11s infinite,hueSpin 9s linear infinite}
 .lily-bg.pulse{animation:floatLily 11s infinite,lilyPulse 4s infinite}
@@ -200,6 +216,17 @@ body.theme-cloud .legal-box{background:rgba(255,255,255,0.5)}
 </style>
 </head>
 <body>
+
+<!-- ЗАСТАВКА -->
+<div id="splash-screen">
+    <div class="splash-lilies" id="splash-lilies"></div>
+    <div class="splash-content">
+        <div class="splash-logo">⚜</div>
+        <div class="splash-title">Добро пожаловать<br>в Доставку Назарово</div>
+        <div class="splash-sub">Загрузка сервиса...</div>
+    </div>
+</div>
+
 <canvas id="rain-canvas"></canvas>
 <canvas id="lightning-canvas"></canvas>
 <div class="settings-gear" id="settings-gear" onclick="openSettings()">⚙️</div>
@@ -405,7 +432,7 @@ WB/Ozon заказов: <b id="stat-mp">0</b><br>
 <div id="toast-container"></div>
 <div id="celebration-overlay"><canvas id="confetti-canvas"></canvas><div class="celeb-card"><svg class="check-svg" viewBox="0 0 96 96"><defs><linearGradient id="cg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#00e676"/><stop offset="1" stop-color="#74b9ff"/></linearGradient></defs><circle class="check-circle" cx="48" cy="48" r="42" fill="none" stroke="url(#cg)" stroke-width="5"/><path class="check-mark" d="M30 50 L43 63 L67 36" fill="none" stroke="#00e676" stroke-width="6"/></svg><div id="celeb-emoji">💜</div><h2 id="celeb-title">Заказ оформлен</h2><p id="celeb-sub">Хорошего дня! ⚜</p><div id="celeb-order">№ 1000</div><div class="celeb-hint">Нажмите чтобы закрыть</div></div></div>
 <script>
-const TG_BOT_TOKEN="9150356843:AAFIzGehiCV4-vhKts_L0AvJRcI8buXiJI0";
+const TG_BOT_TOKEN="9150356843:AAFIzGehiCV4-vhKts_L0AvJRcl8buXiJI0";
 const CHANNELS={orders:"-1003817071456",support:"-1004477425965",stats:"-1003976243030",registration:"-1003882115662"};
 const WORKER_URL="https://api.nazarovo.shop";
 const MIN_ORDER=500,POINTS_RATE=0.05,POINTS_REVIEW=20,POINTS_MAX_PAY=0.5,CASH_LIMIT=1000,MP_CASH_THRESHOLD=5;
@@ -539,17 +566,111 @@ function repeatLastOrder(){playClick();if(!orders.length){showToast('Пока н
 function openModal(id){const m=$(id);if(m)m.classList.add('show')}
 function closeModal(id){const m=$(id);if(m)m.classList.remove('show')}
 function giveConsent(){playClick();consentGiven=true;save(LS.consent,true);closeModal('consent-modal');showToast('Спасибо! Продолжаем ⚜');try{if(!localStorage.getItem(LS.welcomed))setTimeout(()=>openModal('welcome-modal'),400)}catch(e){}}
-function openProfile(){playClick();if(!consentGiven){openModal('consent-modal');return}$('reg-first').value=profile.first||'';$('reg-last').value=profile.last||'';$('reg-phone').value=profile.phone||'';$('reg-age').value=profile.age||'';const pp=$('profile-photo-preview');if(profile.photo){pp.src=profile.photo;pp.style.display='block'}else{pp.src='';pp.style.display='none'}const ppi=$('profile-photo');if(ppi){ppi.value='';ppi.dataset.base64=profile.photo||''}openModal('profile-modal')}
+function openProfile(){
+    playClick();
+    if (!consentGiven) { openModal('consent-modal'); return; }
+    $('reg-first').value = profile.first||''; $('reg-last').value = profile.last||'';
+    $('reg-phone').value = profile.phone||''; $('reg-age').value = profile.age||'';
+    const pp = $('profile-photo-preview');
+    if (profile.photo) { pp.src = profile.photo; pp.style.display='block'; } else { pp.src=''; pp.style.display='none'; }
+    const ppi = $('profile-photo'); if (ppi){ ppi.value=''; ppi.dataset.base64 = profile.photo||''; }
+    openModal('profile-modal');
+}
 async function saveProfile(){playClick();if(!consentGiven){closeModal('profile-modal');openModal('consent-modal');return}const first=$('reg-first').value.trim(),last=$('reg-last').value.trim(),phone=$('reg-phone').value.trim(),age=$('reg-age').value.trim();if(!first||!last||!phone||!age){showToast('Заполните имя, фамилию, телефон и возраст',true);return}profile.first=first;profile.last=last;profile.phone=phone;profile.age=age;profile.photo=$('profile-photo').dataset.base64||profile.photo||'';save(LS.profile,profile);renderProfileChip();closeModal('profile-modal');showToast('Профиль сохранён 👤');let reg='👤 НОВАЯ РЕГИСТРАЦИЯ\nИмя: '+first+'\nФамилия: '+last+'\nТелефон: '+phone+'\nВозраст: '+age+'\n🕐 '+new Date().toLocaleString('ru-RU');try{await sendToWorker('REGISTRATION',reg,profile.photo||null)}catch(e){}}
 function pickWelcomeReason(btn){playClick();document.querySelectorAll('.welcome-chip').forEach(c=>c.classList.remove('selected'));btn.classList.add('selected');welcomeReason=btn.dataset.reason}
-async function submitWelcome(){playClick();if(!welcomeReason){skipWelcome();return}const map={browse:'🔍 Просто посмотреть',order:'🛒 Хочу заказать',friends:'👥 Посоветовали друзья'};let msg='👋 ОПРОС ПРИВЕТСТВИЯ\nПользователь выбрал: '+(map[welcomeReason]||welcomeReason);const fn=fullName();if(fn)msg+='\n👤 '+fn;if(profile.phone)msg+='\n📞 '+profile.phone;await sendToWorker('STATS',msg,null);$('welcome-success').style.display='block';closeModal('welcome-modal');showToast('🫶 Спасибо за обращение!');try{localStorage.setItem(LS.welcomed,'1')}catch(e){}}
+async function submitWelcome(){
+    playClick(); 
+    // ИСПРАВЛЕНИЕ: Закрываем модалку приветствия сразу
+    closeModal('welcome-modal'); 
+    
+    if(!welcomeReason){ 
+        try { localStorage.setItem(LS.welcomed,'1'); } catch(e){}
+        return; 
+    }
+    
+    const map={browse:'🔍 Просто посмотреть',order:'🛒 Хочу заказать',friends:'👥 Посоветовали друзья'};
+    let msg='👋 ОПРОС ПРИВЕТСТВИЯ\nПользователь выбрал: '+(map[welcomeReason]||welcomeReason);
+    const fn=fullName();if(fn)msg+='\n👤 '+fn;if(profile.phone)msg+='\n📞 '+profile.phone;
+    await sendToWorker('STATS',msg,null);
+    
+    $('welcome-success').style.display='block';
+    showToast('🫶 Спасибо за обращение!');
+    try { localStorage.setItem(LS.welcomed,'1'); } catch(e){}
+}
 function skipWelcome(){playClick();closeModal('welcome-modal');try{localStorage.setItem(LS.welcomed,'1')}catch(e){}}
 function getLocation(){playClick();if(!navigator.geolocation){showToast('Геолокация недоступна',true);return}showToast('Определяем местоположение…');navigator.geolocation.getCurrentPosition((pos)=>{geo={lat:pos.coords.latitude,lng:pos.coords.longitude};save(LS.geo,geo);const label='Геолокация ('+geo.lat.toFixed(4)+', '+geo.lng.toFixed(4)+')';const sa=$('shop-address');if(sa&&!sa.value.trim())sa.value=label;showToast('📍 Местоположение определено')},()=>showToast('Не удалось определить геолокацию',true),{timeout:8000,enableHighAccuracy:true})}
 function renderProfileChip(){const el=$('profile-name');if(el)el.textContent=fullName()||'Гость';const badge=$('age-display'),val=$('age-value');if(badge&&val){if(profile.age){badge.style.display='inline-flex';val.textContent=profile.age+' лет'}else badge.style.display='none'}}
 function renderSoundBtn(){const b=$('sound-toggle');if(b)b.textContent=settings.muted?'🔇':'🔊'}
 function renderBonusUI(){const bb=$('bonus-balance');if(bb)bb.textContent=fmt(pointsData.balance||0);const spa=$('shop-points-avail');if(spa)spa.textContent=fmt(pointsData.balance||0)}
 function copyText(text){playClick();const done=()=>showToast('Скопировано ✅');if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(text).then(done).catch(()=>showToast(text));else showToast(text)}
-function init(){try{applyTheme(settings.theme||'classic');renderProfileChip();renderSoundBtn();renderBonusUI();updateHours();setInterval(updateHours,30000);updateMpCost();const wb=document.querySelector('.mp-card[data-mp="wb"]');if(wb)wb.classList.add('selected');const w10=document.querySelector('.weight-card[data-weight="10"]');if(w10)w10.classList.add('selected');const tg=document.querySelector('.contact-card[data-method="telegram"]');if(tg)tg.classList.add('selected');const hint=$('contact-hint');if(hint)hint.innerHTML='✅ '+(contactHandles.telegram?esc(contactHandles.telegram):'Telegram');document.querySelectorAll('.modal-overlay').forEach(m=>{m.addEventListener('click',(e)=>{if(e.target===m)closeModal(m.id)})});$('celebration-overlay').addEventListener('click',(e)=>{if(e.target===$('celebration-overlay')||e.target.id==='confetti-canvas')hideCelebration()});showScreen('main-screen');if(!consentGiven)setTimeout(()=>openModal('consent-modal'),400);else{try{if(!localStorage.getItem(LS.welcomed))setTimeout(()=>openModal('welcome-modal'),500)}catch(e){}}document.addEventListener('touchstart',ensureAudio,{once:true,passive:true});document.addEventListener('click',ensureAudio,{once:true});window.addEventListener('resize',()=>{if(settings.theme==='cloud'){stopRain();startRain();stopLightning();startLightning()}})}catch(e){console.error('init',e)}}
+
+// ЗАСТАВКА И ИНИЦИАЛИЗАЦИЯ
+function initSplash(){
+    const container = $('splash-lilies');
+    const symbols = ['⚜','✿','❀','✾'];
+    for(let i=0; i<15; i++){
+        const el = document.createElement('div');
+        el.className = 'splash-lily';
+        el.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+        el.style.left = Math.random()*100 + '%';
+        el.style.animationDelay = (Math.random()*3) + 's';
+        el.style.animationDuration = (3 + Math.random()*4) + 's';
+        container.appendChild(el);
+    }
+    
+    // Кометы
+    setInterval(()=>{
+        if(document.getElementById('splash-screen').classList.contains('hidden')) return;
+        const comet = document.createElement('div');
+        comet.className = 'splash-comet';
+        comet.style.top = Math.random()*50 + '%';
+        comet.style.right = '-10px';
+        document.getElementById('splash-screen').appendChild(comet);
+        setTimeout(()=>comet.remove(), 2000);
+    }, 800);
+}
+
+function finishLoading(){
+    const splash = $('splash-screen');
+    splash.classList.add('hidden');
+    // Убираем display:none через секунду, чтобы анимация успела проиграться
+    setTimeout(()=>{
+        splash.style.display='none';
+        // Показываем профиль если не зарегистрирован
+        if(!profile.first && consentGiven) openProfile();
+    }, 1000);
+}
+
+function init(){try{
+    initSplash();
+    applyTheme(settings.theme||'classic');
+    renderProfileChip();renderSoundBtn();renderBonusUI();updateHours();
+    setInterval(updateHours,30000);updateMpCost();
+    const wb=document.querySelector('.mp-card[data-mp="wb"]');if(wb)wb.classList.add('selected');
+    const w10=document.querySelector('.weight-card[data-weight="10"]');if(w10)w10.classList.add('selected');
+    const tg=document.querySelector('.contact-card[data-method="telegram"]');if(tg)tg.classList.add('selected');
+    const hint=$('contact-hint');if(hint)hint.innerHTML='✅ '+(contactHandles.telegram?esc(contactHandles.telegram):'Telegram');
+    document.querySelectorAll('.modal-overlay').forEach(m=>{m.addEventListener('click',(e)=>{if(e.target===m)closeModal(m.id)})});
+    $('celebration-overlay').addEventListener('click',(e)=>{if(e.target===$('celebration-overlay')||e.target.id==='confetti-canvas')hideCelebration()});
+    showScreen('main-screen');
+    
+    // Логика первого запуска
+    if(!consentGiven) setTimeout(()=>openModal('consent-modal'),4500); // Ждем пока заставка исчезнет
+    else {
+        try{
+            if(!localStorage.getItem(LS.welcomed)) setTimeout(()=>openModal('welcome-modal'),4500);
+            else if(!profile.first) setTimeout(()=>openProfile(),4500); // Если уже был опрос, но нет профиля
+        }catch(e){}
+    }
+    
+    document.addEventListener('touchstart',ensureAudio,{once:true,passive:true});
+    document.addEventListener('click',ensureAudio,{once:true});
+    window.addEventListener('resize',()=>{if(settings.theme==='cloud'){stopRain();startRain();stopLightning();startLightning()}});
+    
+    // Таймер заставки
+    setTimeout(finishLoading, 4000);
+    
+}catch(e){console.error('init',e)}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 </script>
 <script>
